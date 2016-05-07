@@ -26,13 +26,6 @@
 #include <vector>
 #include <cassert>
 
-template<typename IntType>
-constexpr bool is_power_of_two(const IntType num) noexcept
-{
-    static_assert(std::is_integral<IntType>::value, "Integer type required!");
-    return (num > 0) && ((num & (num - 1)) == 0);
-}
-
 //
 // -----------------------
 //  hash_index<> template
@@ -657,6 +650,13 @@ public:
     }
 
 private:
+
+    template<typename IntType>
+    static bool is_power_of_two(const IntType num) noexcept
+    {
+        static_assert(std::is_integral<IntType>::value, "Integer type required!");
+        return (num > 0) && ((num & (num - 1)) == 0);
+    }
 
     void internal_init(const size_type initial_hash_buckets_size,
                        const size_type initial_index_chain_size)

@@ -3,14 +3,14 @@
 
 A fast hash table template for array indexes that keeps the hash keys separated from the mapped values.
 
-----
-
-`hash_index` is based on a similar class used by the DOOM 3 game from id Software.
+`hash_index` is based on a similar data structure used by the DOOM 3 game from id Software.
 I have adapted it to be usable as a standalone template class and also added a few
 extra customization options and additional helper methods. You can find the original
 `idHashIndex` class [in here](https://github.com/id-Software/DOOM-3-BFG/blob/master/neo/idlib/containers/HashIndex.h).
 
-A basic usage example:
+----
+
+Basic usage example:
 
 ```cpp
 #include "hash_index.hpp"
