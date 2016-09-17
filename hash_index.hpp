@@ -19,12 +19,25 @@
 #ifndef HASH_INDEX_HPP
 #define HASH_INDEX_HPP
 
-#include <type_traits>
-#include <functional>
-#include <algorithm>
-#include <memory>
-#include <vector>
-#include <cassert>
+// Defining this before including the file prevents pulling the Standard headers.
+// Useful to be able to place this file inside a user-defined namespace or to simply
+// avoid redundant inclusions. User is responsible for providing all the necessary
+// Standard headers before #including this one.
+#ifndef HASH_INDEX_NO_STD_INCLUDES
+    #include <type_traits>
+    #include <functional>
+    #include <algorithm>
+    #include <memory>
+    #include <vector>
+#endif // HASH_INDEX_NO_STD_INCLUDES
+
+// Hook to allow providing a custom assert() before including this file.
+#ifndef HASH_INDEX_ASSERT
+    #ifndef HASH_INDEX_NO_STD_INCLUDES
+        #include <cassert>
+    #endif // HASH_INDEX_NO_STD_INCLUDES
+    #define HASH_INDEX_ASSERT assert
+#endif // HASH_INDEX_ASSERT
 
 //
 // -----------------------
@@ -195,8 +208,8 @@ public:
         }
         else // Copy data from 'other':
         {
-            assert(other.is_allocated());
-            assert(is_power_of_two(other.m_hash_buckets_size));
+            HASH_INDEX_ASSERT(other.is_allocated());
+            HASH_INDEX_ASSERT(is_power_of_two(other.m_hash_buckets_size));
 
             m_hash_buckets = Allocator::allocate(other.m_hash_buckets_size);
             m_index_chain  = Allocator::allocate(other.m_index_chain_size);
@@ -264,7 +277,7 @@ public:
         // The index chain is resized when new items are inserted
         // to match the largest index, so this check is mostly
         // for internal consistency.
-        assert(static_cast<size_type>(index) < m_index_chain_size);
+        HASH_INDEX_ASSERT(static_cast<size_type>(index) < m_index_chain_size);
         return m_index_chain[index & m_lookup_mask];
     }
 
@@ -312,7 +325,7 @@ public:
 
     void erase(const key_type key, const index_type index)
     {
-        assert(static_cast<size_type>(index) < m_index_chain_size);
+        HASH_INDEX_ASSERT(static_cast<size_type>(index) < m_index_chain_size);
 
         if (!is_allocated())
         {
@@ -391,7 +404,7 @@ public:
     // Remove an entry from the index chain and remove it from the hash, decreasing all indexes >= index.
     void erase_and_remove_index(const key_type key, const index_type index)
     {
-        assert(static_cast<size_type>(index) < m_index_chain_size);
+        HASH_INDEX_ASSERT(static_cast<size_type>(index) < m_index_chain_size);
 
         if (!is_allocated())
         {
@@ -452,7 +465,7 @@ public:
 
     void clear_and_resize(const size_type new_hash_buckets_size, const size_type new_index_chain_size)
     {
-        assert(is_power_of_two(new_hash_buckets_size) && "Size of hash_index buckets array must be a power-of-2!");
+        HASH_INDEX_ASSERT(is_power_of_two(new_hash_buckets_size) && "Size of hash_index buckets array must be a power-of-2!");
 
         clear_and_free();
         m_hash_buckets_size = new_hash_buckets_size;
@@ -476,7 +489,7 @@ public:
 
     void set_granularity(const size_type new_granularity)
     {
-        assert(new_granularity > 0);
+        HASH_INDEX_ASSERT(new_granularity > 0);
         m_granularity = new_granularity;
     }
 
@@ -661,8 +674,8 @@ private:
     void internal_init(const size_type initial_hash_buckets_size,
                        const size_type initial_index_chain_size)
     {
-        assert(is_power_of_two(initial_hash_buckets_size) && "Size of hash_index buckets array must be a power-of-2!");
-        assert(!is_allocated() && "Already initialized!");
+        HASH_INDEX_ASSERT(is_power_of_two(initial_hash_buckets_size) && "Size of hash_index buckets array must be a power-of-2!");
+        HASH_INDEX_ASSERT(!is_allocated() && "Already initialized!");
 
         m_hash_buckets      = m_invalid_index_dummy;
         m_index_chain       = m_invalid_index_dummy;
@@ -676,7 +689,7 @@ private:
     void internal_allocate(const size_type new_hash_buckets_size,
                            const size_type new_index_chain_size)
     {
-        assert(is_power_of_two(new_hash_buckets_size) && "Size of hash_index buckets array must be a power-of-2!");
+        HASH_INDEX_ASSERT(is_power_of_two(new_hash_buckets_size) && "Size of hash_index buckets array must be a power-of-2!");
 
         if (is_allocated())
         {
