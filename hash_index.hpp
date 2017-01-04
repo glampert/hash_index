@@ -501,7 +501,7 @@ public:
         }
 
         size_type new_size;
-        const long mod = new_index_chain_size % m_granularity;
+        const auto mod = new_index_chain_size % m_granularity;
 
         if (mod == 0)
         {
@@ -773,8 +773,7 @@ private:
 
 // This abomination here is the m_invalid_index_dummy[] static initializer:
 template<typename IT, typename KT, typename ST, typename AT>
-typename hash_index<IT, KT, ST, AT>::index_type hash_index<IT, KT, ST, AT>::m_invalid_index_dummy[1]
-{
+typename hash_index<IT, KT, ST, AT>::index_type hash_index<IT, KT, ST, AT>::m_invalid_index_dummy[1] = {
     hash_index<IT, KT, ST, AT>::null_index
 };
 

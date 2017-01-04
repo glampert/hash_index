@@ -106,7 +106,7 @@ static void test_insertion()
     // now we just validate the inserted keys are there:
     for (auto k : keys)
     {
-        assert(h1.first(k) != h1.null_index);
+        assert(h1.first(static_cast<typename HashIndexType::key_type>(k)) != h1.null_index);
     }
 }
 
@@ -129,7 +129,7 @@ static void test_erasure()
     // now first() should yield null_index for all keys.
     for (auto k : keys)
     {
-        assert(h1.first(k) == h1.null_index);
+        assert(h1.first(static_cast<typename HashIndexType::key_type>(k)) == h1.null_index);
     }
 }
 
@@ -147,7 +147,7 @@ static void test_lookup()
     // and find them:
     for (std::size_t k = 0; k < keys.size(); ++k)
     {
-        for (auto i = h1.first(keys[k]); i != h1.null_index; i = h1.next(i))
+        for (auto i = h1.first(static_cast<typename HashIndexType::key_type>(keys[k])); i != h1.null_index; i = h1.next(i))
         {
             if (static_cast<std::size_t>(i) == k)
             {
@@ -223,7 +223,7 @@ using HashIndexUInt64  = hash_index<std::uint64_t, std::uint64_t, std::uint64_t>
         test_##func<HashIndexUInt64>();                       \
         std::cout << "> " << #func << " test completed!\n\n"; \
     }                                                         \
-    while (0)
+    while (0,0)
 
 int main()
 {
